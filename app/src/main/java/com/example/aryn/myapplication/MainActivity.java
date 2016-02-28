@@ -31,22 +31,36 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private int mCurrentIndex = 0;
+    private boolean mIsCheater;
 
     private void updateQuestion() {
         int question = mQuestionBank[mCurrentIndex].getQuestion();
         mQuestionTextView.setText(question);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(data == null){
+            return;
+        }
+        mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    }
+
     //checking answer method
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
         int messageResId = 0;
-
-        if (userPressedTrue == answerIsTrue) {
-            messageResId = R.string.correct_toast;
-        } else {
-            messageResId = R.string.incorrect_toast;
+        if(mIsCheater){
+            messageResId = R.string.judgment_toast;
+        }else {
+            if (userPressedTrue == answerIsTrue) {
+                messageResId = R.string.correct_toast;
+            } else {
+                messageResId = R.string.incorrect_toast;
+            }
         }
+
+
         Toast.makeText(this, messageResId, Toast.LENGTH_SHORT).show();
     }
 
@@ -101,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mNextButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -114,11 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     mCurrentIndex = mQuestionBank.length - 1;
                 }
+                mIsCheater = false;
                 updateQuestion();
             }
         });
 
         //******************************//
+
         updateQuestion();
     }
 
