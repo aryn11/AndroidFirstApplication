@@ -14,12 +14,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
 
     private static final String KEY_INDEX = "index";
+    private static final String BOOLEAN_KEY_INDEX = "boolean_index";
 
     private Button mTrueButton;
     private Button mFalseButton;
     private Button mNextButton;
     private Button mPrevButton;
     private Button mCheatButton;
+    private Boolean mIsAnswerShown;
     private TextView mQuestionTextView;
 
     private TrueFalse[] mQuestionBank = new TrueFalse[]{
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         //checking for saved values
         if (savedInstanceState != null) {
             mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+            mIsCheater = savedInstanceState.getBoolean(BOOLEAN_KEY_INDEX);
         }
         //TextView with question text
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
@@ -144,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
-        savedInstanceState.putString("Name", "Akpar");
+        savedInstanceState.putBoolean(BOOLEAN_KEY_INDEX, mIsCheater);
     }
 }
 

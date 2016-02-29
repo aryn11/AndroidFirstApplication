@@ -1,6 +1,7 @@
 package com.example.aryn.myapplication;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +13,8 @@ public class CheatActivity extends AppCompatActivity {
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextView;
     private Button mShowAnswer;
-
+    private boolean mIsAnswerShown = false;
+    private static final String KEY_INDEX = "answerShown10";
     public static final String EXTRA_ANSWER_IS_TRUE = "com.example.aryn.myapplication.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "com.example.aryn.myapplication.answer_shown";
 
@@ -22,25 +24,40 @@ public class CheatActivity extends AppCompatActivity {
         setResult(RESULT_OK, data);
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
-
+        if (savedInstanceState != null) {
+            mIsAnswerShown = savedInstanceState.getBoolean(KEY_INDEX);
+            setAnswerShownResult(mIsAnswerShown);
+        }
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
-        setAnswerShownResult(false);
+
+        setAnswerShownResult(mIsAnswerShown);
         mAnswerTextView = (TextView)findViewById(R.id.answerTextView);
         mShowAnswer = (Button)findViewById(R.id.showAnswerButton);
         mShowAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mAnswerIsTrue){
+                if (mAnswerIsTrue) {
                     mAnswerTextView.setText(R.string.true_button);
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-                setAnswerShownResult(true);
+                mIsAnswerShown = true;
+                setAnswerShownResult(mIsAnswerShown);
+
             }
         });
+
+
+    }
+    @Override
+     protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_INDEX, mIsAnswerShown);
     }
 }
